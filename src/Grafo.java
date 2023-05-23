@@ -60,20 +60,31 @@ public class Grafo<T> {
         // Adicionando vertice atual sendo visitado a fila 
         fila.add(atual);
 
-        while(fila.size()>0){
+        while(fila.size() > 0){
+            // Obtém o primeiro vértice da fila
             atual = fila.get(0);
+            // Remove o vértice atual da fila
             fila.remove(0);
+            // Marca o vértice atual como visitado
             marcados.add(atual);
+            // Imprime o valor do vértice atual
             System.out.println(atual.getValor());
+            // Obtém as arestas de saída do vértice atual
             ArrayList<Aresta> destinos = this.obterDestinos(atual);
+            // Variável para armazenar o próximo vértice a ser visitado
             Vertice proximo;
+            // Percorre todas as arestas de saída do vértice atual
             for(int i = 0; i < destinos.size(); i++){
+                // Obtém o destino da aresta atual
                 proximo = destinos.get(i).getDestino();
+                // Verifica se o próximo vértice ainda não foi visitado
                 if(!marcados.contains(proximo)){
+                    // Adiciona o próximo vértice à fila de visita
                     fila.add(proximo);
                 }
             }
         }
+        
     }
 
     private ArrayList<Aresta> obterDestinos(Vertice v){
