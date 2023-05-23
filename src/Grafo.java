@@ -3,75 +3,90 @@ import java.util.ArrayList;
 public class Grafo<T> {
 
     private ArrayList<Vertice<T>> vertices;
-    private float arestas[][];
-    int quantVertices;
+    private ArrayList<Aresta> arestas;
 
-    public Grafo(int quantVertices){
+    public Grafo(){
         this.vertices = new ArrayList<Vertice<T>>();
-        this.arestas = new float[quantVertices][quantVertices];
-        this.quantVertices = quantVertices;
+        this.arestas = new ArrayList<Aresta>();
     }
 
     public Vertice<T> adicionarVertice(T valor){
-
         Vertice<T> novo = new Vertice<T>(valor);
         this.vertices.add(novo);
         return novo;
-        
     }
 
-    private int obterIndiceVertice(T valor){
+    private Vertice obterVertice(T valor){
         Vertice v;
-        for(int i = 0; i<this.vertices.size();i++){
-            v = this.vertices.get(i);
-            if(v.getValor().equals(valor))
-                return i;
+        for(int i = 0; i < this.vertices.size(); i++){
+            if(this.vertices.get(i).getValor().equals(valor)){
+                return (Vertice) this.vertices.get(i).getValor();
+            }
         }
-        return -1;
+
+        return null;
     }
 
     public void adicionarAresta(T origem, T destino, float peso){
         Vertice verticeOrigem, verticeDestino;
         Aresta novaAresta;
 
-        int indiceOrigem = obterIndiceVertice(origem);
+        // Procura se vertice origem ja existe e se nao ele adiciona
+        verticeOrigem = obterVertice(origem);
 
-        if(indiceOrigem == -1){
+        if(verticeOrigem == null){
             verticeOrigem = adicionarVertice(origem);
-            indiceOrigem = this.vertices.indexOf(verticeOrigem);
         }
 
-        int indiceDestino = obterIndiceVertice(destino);
+        // Procura se vertice destino ja existe e se nao ele adiciona
+        verticeDestino = obterVertice(destino);
 
-        if(indiceDestino == -1){
+        if(verticeDestino == null){
             verticeDestino = adicionarVertice(destino);
-            indiceDestino = this.vertices.indexOf(verticeDestino);
         }
 
-        this.arestas[indiceOrigem][indiceDestino] = peso;
+        novaAresta = new Aresta(verticeOrigem, verticeDestino, peso);
+
+        this.arestas.add(novaAresta);
     }
 
     public void buscaEmLargura(){
-        boolean marcados[] = new boolean[this.quantVertices];
-        int atual = 0;
-        ArrayList<Integer> fila = new ArrayList<Integer>();
-        
+        // Lista de vertices ja visitados
+        ArrayList<Vertice> marcados = new ArrayList<Vertice>();
+        // Lista de vertices ainda para serem visitados e que estao sendo visitados
+        ArrayList<Vertice> fila = new ArrayList<Vertice>();
+        // Variavel com o vertice atual sendo visitado
+        Vertice atual = this.vertices.get(0);
+        // Adicionando vertice atual sendo visitado a fila 
         fila.add(atual);
-        while(fila.size() > 0){
+
+        while(fila.size()>0){
             atual = fila.get(0);
             fila.remove(0);
-            marcados[atual] = true;
-            System.out.println(this.vertices.get(atual).getValor());
-            for(int dest=0; dest<this.quantVertices;dest++){
-                if(arestas[atual][dest] > 0){
-                    if(!marcados[dest]){
-                        fila.add(dest);
-                    }
+            marcados.add(atual);
+            System.out.println(atual.getValor());
+            ArrayList<Aresta> destinos = this.obterDestinos(atual);
+            Vertice proximo;
+            for(int i = 0; i < destinos.size(); i++){
+                proximo = destinos.get(i).getDestino();
+                if(!marcados.contains(proximo)){
+                    fila.add(proximo);
                 }
             }
         }
     }
 
-    
+    private ArrayList<Aresta> obterDestinos(Vertice v){
+        ArrayList<Aresta> destinos = new ArrayList<Aresta>();
+        Aresta atual;
+        for(int i = 0; i<this.arestas.size(); i++){
+            atual = this.arestas.get(i);
+            if(atual.getOrigem().equals(v)){
+                destinos.add(atual);
+            }
+        }
+        return destinos;
+    }
+
     
 }
