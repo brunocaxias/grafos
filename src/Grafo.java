@@ -77,15 +77,7 @@ public class Grafo<T> {
         return destinos;
     }
 
-    public void printVerticesVizinhos(Vertice<T> v) {
-
-        ArrayList<Aresta> arestasSaida = obterDestinos(v);
-
-        for (Aresta aresta : arestasSaida) {
-            Vertice<T> vizinho = aresta.getDestino();
-            System.out.println(vizinho.toString());
-        }
-    }
+    
     
     
 

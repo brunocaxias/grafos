@@ -7,8 +7,5 @@ public class App {
         //grafo.buscaEmLargura();
 
 
-
-        grafo.printVerticesVizinhos(new Vertice<Cidade>(new Cidade(1, "Yilil")));
-
     }
 }
