@@ -2,6 +2,15 @@ public class Cidade {
 
     private int codigo;
     private String nome;
+
+
+    
+
+    public Cidade(int codigo, String nome) {
+        this.codigo = codigo;
+        this.nome = nome;
+    }
+    
     public int getCodigo() {
         return codigo;
     }

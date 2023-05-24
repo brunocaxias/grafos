@@ -5,99 +5,88 @@ public class Grafo<T> {
     private ArrayList<Vertice<T>> vertices;
     private ArrayList<Aresta> arestas;
 
-    public Grafo(){
-        this.vertices = new ArrayList<Vertice<T>>();
-        this.arestas = new ArrayList<Aresta>();
+    public Grafo() {
+        this.vertices = new ArrayList<>();
+        this.arestas = new ArrayList<>();
     }
 
-    public Vertice<T> adicionarVertice(T valor){
-        Vertice<T> novo = new Vertice<T>(valor);
+    public Vertice<T> adicionarVertice(T valor) {
+        Vertice<T> novo = new Vertice<>(valor);
         this.vertices.add(novo);
         return novo;
     }
 
-    private Vertice obterVertice(T valor){
-        Vertice v;
-        for(int i = 0; i < this.vertices.size(); i++){
-            if(this.vertices.get(i).getValor().equals(valor)){
-                return (Vertice) this.vertices.get(i).getValor();
+    private Vertice<T> obterVertice(T valor) {
+        for (Vertice<T> vertice : this.vertices) {
+            if (vertice.getValor().equals(valor)) {
+                return vertice;
             }
         }
-
         return null;
     }
 
-    public void adicionarAresta(T origem, T destino, float peso){
-        Vertice verticeOrigem, verticeDestino;
-        Aresta novaAresta;
-
-        // Procura se vertice origem ja existe e se nao ele adiciona
-        verticeOrigem = obterVertice(origem);
-
-        if(verticeOrigem == null){
+    public void adicionarAresta(T origem, T destino, float peso) {
+        Vertice<T> verticeOrigem = obterVertice(origem);
+        if (verticeOrigem == null) {
             verticeOrigem = adicionarVertice(origem);
         }
 
-        // Procura se vertice destino ja existe e se nao ele adiciona
-        verticeDestino = obterVertice(destino);
-
-        if(verticeDestino == null){
+        Vertice<T> verticeDestino = obterVertice(destino);
+        if (verticeDestino == null) {
             verticeDestino = adicionarVertice(destino);
         }
 
-        novaAresta = new Aresta(verticeOrigem, verticeDestino, peso);
-
+        Aresta novaAresta = new Aresta(verticeOrigem, verticeDestino, peso);
         this.arestas.add(novaAresta);
     }
 
-    public void buscaEmLargura(){
-        // Lista de vertices ja visitados
-        ArrayList<Vertice> marcados = new ArrayList<Vertice>();
-        // Lista de vertices ainda para serem visitados e que estao sendo visitados
-        ArrayList<Vertice> fila = new ArrayList<Vertice>();
-        // Variavel com o vertice atual sendo visitado
-        Vertice atual = this.vertices.get(0);
-        // Adicionando vertice atual sendo visitado a fila 
-        fila.add(atual);
+    public void buscaEmLargura() {
+        ArrayList<Vertice<T>> marcados = new ArrayList<>();  // Lista de vértices visitados
+        ArrayList<Vertice<T>> fila = new ArrayList<>();      // Fila para armazenar os vértices a serem visitados
+        Vertice<T> atual = this.vertices.get(0);             
+        fila.add(atual);                                     
+        marcados.add(atual);                                 
+    
+        while (!fila.isEmpty()) {
+            atual = fila.get(0);                             // Obtém o próximo vértice da fila
+            fila.remove(0);                                  // Remove o vértice atual da fila
+            System.out.println(atual.getValor());            // Imprime o valor do vértice atual
+    
+            ArrayList<Aresta> destinos = obterDestinos(atual);   
 
-        while(fila.size() > 0){
-            // Obtém o primeiro vértice da fila
-            atual = fila.get(0);
-            // Remove o vértice atual da fila
-            fila.remove(0);
-            // Marca o vértice atual como visitado
-            marcados.add(atual);
-            // Imprime o valor do vértice atual
-            System.out.println(atual.getValor());
-            // Obtém as arestas de saída do vértice atual
-            ArrayList<Aresta> destinos = this.obterDestinos(atual);
-            // Variável para armazenar o próximo vértice a ser visitado
-            Vertice proximo;
-            // Percorre todas as arestas de saída do vértice atual
-            for(int i = 0; i < destinos.size(); i++){
-                // Obtém o destino da aresta atual
-                proximo = destinos.get(i).getDestino();
-                // Verifica se o próximo vértice ainda não foi visitado
-                if(!marcados.contains(proximo)){
-                    // Adiciona o próximo vértice à fila de visita
-                    fila.add(proximo);
+            for (Aresta aresta : destinos) {
+
+                Vertice<T> proximo = aresta.getDestino();     
+
+                if (!marcados.contains(proximo)) {           // Verifica se o vértice destino ainda não foi visitado
+                    fila.add(proximo);                        // Adiciona o vértice destino à fila para visita
+                    marcados.add(proximo);                     // Marca o vértice destino como visitado
                 }
             }
         }
-        
     }
 
-    private ArrayList<Aresta> obterDestinos(Vertice v){
-        ArrayList<Aresta> destinos = new ArrayList<Aresta>();
-        Aresta atual;
-        for(int i = 0; i<this.arestas.size(); i++){
-            atual = this.arestas.get(i);
-            if(atual.getOrigem().equals(v)){
-                destinos.add(atual);
+    private ArrayList<Aresta> obterDestinos(Vertice<T> v) {
+        ArrayList<Aresta> destinos = new ArrayList<>();
+        
+        for (Aresta aresta : this.arestas) {
+            if (aresta.getOrigem().equals(v)) {
+                destinos.add(aresta);
             }
         }
         return destinos;
     }
 
+    public void printVerticesVizinhos(Vertice<T> v) {
+
+        ArrayList<Aresta> arestasSaida = obterDestinos(v);
+
+        for (Aresta aresta : arestasSaida) {
+            Vertice<T> vizinho = aresta.getDestino();
+            System.out.println(vizinho.toString());
+        }
+    }
     
+    
+
 }

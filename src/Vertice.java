@@ -19,7 +19,6 @@ public class Vertice<T> {
     public String toString() {
         return valor.toString();
     }
-
     
 
 }
