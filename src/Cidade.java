@@ -8,6 +8,10 @@ public class Cidade {
         this.codigo = codigo;
         this.nome = nome;
     }
+
+    public Cidade(int codigo) {
+        this.codigo = codigo;
+    }
     
     public int getCodigo() {
         return codigo;
@@ -15,6 +19,8 @@ public class Cidade {
     public void setCodigo(int codigo) {
         this.codigo = codigo;
     }
+    
+
     public String getNome() {
         return nome;
     }

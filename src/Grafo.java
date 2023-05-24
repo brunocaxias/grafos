@@ -16,7 +16,7 @@ public class Grafo<T> {
         return novo;
     }
 
-    private Vertice<T> obterVertice(T valor) {
+    public Vertice<T> obterVertice(T valor) {
         for (Vertice<T> vertice : this.vertices) {
             if (vertice.getValor().equals(valor)) {
                 return vertice;
@@ -41,26 +41,52 @@ public class Grafo<T> {
     }
 
     public void buscaEmLargura() {
-        ArrayList<Vertice<T>> marcados = new ArrayList<>();  // Lista de vértices visitados
-        ArrayList<Vertice<T>> fila = new ArrayList<>();      // Fila para armazenar os vértices a serem visitados
-        Vertice<T> atual = this.vertices.get(0);             
-        fila.add(atual);                                     
-        marcados.add(atual);                                 
-    
+        ArrayList<Vertice<T>> marcados = new ArrayList<>();         // Lista de vértices visitados
+        ArrayList<Vertice<T>> fila = new ArrayList<>();             // Fila para armazenar os vértices a serem visitados
+        Vertice<T> atual = this.vertices.get(0);
+        fila.add(atual);
+        marcados.add(atual);
+
         while (!fila.isEmpty()) {
-            atual = fila.get(0);                             // Obtém o próximo vértice da fila
-            fila.remove(0);                                  // Remove o vértice atual da fila
-            System.out.println(atual.getValor());            // Imprime o valor do vértice atual
-    
-            ArrayList<Aresta> destinos = obterDestinos(atual);   
+            atual = fila.get(0);                              // Obtém o próximo vértice da fila
+            fila.remove(0);                                   // Remove o vértice atual da fila
+            System.out.println(atual.getValor());                   // Imprime o valor do vértice atual
+
+            ArrayList<Aresta> destinos = obterDestinos(atual);
 
             for (Aresta aresta : destinos) {
 
-                Vertice<T> proximo = aresta.getDestino();     
+                Vertice<T> proximo = aresta.getDestino();
 
-                if (!marcados.contains(proximo)) {           // Verifica se o vértice destino ainda não foi visitado
-                    fila.add(proximo);                        // Adiciona o vértice destino à fila para visita
-                    marcados.add(proximo);                     // Marca o vértice destino como visitado
+                if (!marcados.contains(proximo)) {                  // Verifica se o vértice destino ainda não foi visitado
+                    fila.add(proximo);                              // Adiciona o vértice destino à fila para visita
+                    marcados.add(proximo);                          // Marca o vértice destino como visitado
+                }
+            }
+        }
+    }
+
+    public void buscaEmLargura(T v) {
+        ArrayList<Vertice<T>> marcados = new ArrayList<>();         // Lista de vértices visitados
+        ArrayList<Vertice<T>> fila = new ArrayList<>();             // Fila para armazenar os vértices a serem visitados
+        Vertice<T> atual = obterVertice(v);
+        fila.add(atual);
+        marcados.add(atual);
+
+        while (!fila.isEmpty()) {
+            atual = fila.get(0);                              // Obtém o próximo vértice da fila
+            fila.remove(0);                                   // Remove o vértice atual da fila
+            System.out.println(atual.getValor());                   // Imprime o valor do vértice atual
+
+            ArrayList<Aresta> destinos = obterDestinos(atual);
+
+            for (Aresta aresta : destinos) {
+
+                Vertice<T> proximo = aresta.getDestino();
+
+                if (!marcados.contains(proximo)) {                  // Verifica se o vértice destino ainda não foi visitado
+                    fila.add(proximo);                              // Adiciona o vértice destino à fila para visita
+                    marcados.add(proximo);                          // Marca o vértice destino como visitado
                 }
             }
         }
@@ -68,7 +94,7 @@ public class Grafo<T> {
 
     private ArrayList<Aresta> obterDestinos(Vertice<T> v) {
         ArrayList<Aresta> destinos = new ArrayList<>();
-        
+
         for (Aresta aresta : this.arestas) {
             if (aresta.getOrigem().equals(v)) {
                 destinos.add(aresta);
@@ -77,8 +103,12 @@ public class Grafo<T> {
         return destinos;
     }
 
-    
-    
-    
+    public void imprimirVizinhos(Vertice<T> v) {
+        ArrayList<Aresta> destinos = obterDestinos(v);
+
+        for(Aresta aresta : destinos){
+            System.out.println(aresta.getDestino().getValor().toString());
+        }
+    }
 
 }
