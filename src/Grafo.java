@@ -274,9 +274,9 @@ public class Grafo<T> {
         Collections.sort(arestas);
     
         // Criar um array para rastrear o conjunto pai de cada vértice
-        int[] parent = new int[vertices.size()];
+        int[] pai = new int[vertices.size()];
         for (int i = 0; i < vertices.size(); i++) {
-            parent[i] = i; // Inicialmente, cada vértice é seu próprio pai
+            pai[i] = i; // Inicialmente, cada vértice é seu próprio pai
         }
     
         // Percorrer todas as arestas em ordem crescente de peso
@@ -285,13 +285,13 @@ public class Grafo<T> {
             Vertice<T> destino = aresta.getDestino();
     
             // Encontrar o representante (pai) de cada vértice na árvore
-            int representanteOrigem = encontrarRepresentante(parent, vertices.indexOf(origem));
-            int representanteDestino = encontrarRepresentante(parent, vertices.indexOf(destino));
+            int representanteOrigem = encontrarRepresentante(pai, vertices.indexOf(origem));
+            int representanteDestino = encontrarRepresentante(pai, vertices.indexOf(destino));
     
             // Verificar se a inclusão da aresta forma um ciclo no grafo
             if (representanteOrigem != representanteDestino) {
                 mst.arestas.add(aresta); // Adicionar a aresta à árvore geradora mínima
-                unirConjuntos(parent, representanteOrigem, representanteDestino); // Unir os conjuntos dos vértices
+                unirConjuntos(pai, representanteOrigem, representanteDestino); // Unir os conjuntos dos vértices
             }
         }
     
@@ -299,18 +299,19 @@ public class Grafo<T> {
     }
     
     // Encontrar o representante (pai) de um vértice no conjunto
-    private int encontrarRepresentante(int[] parent, int verticeIndex) {
-        if (parent[verticeIndex] != verticeIndex) {
-            parent[verticeIndex] = encontrarRepresentante(parent, parent[verticeIndex]);
+    private int encontrarRepresentante(int[] pai, int verticeIndex) {
+        if (pai[verticeIndex] != verticeIndex) {
+            pai[verticeIndex] = encontrarRepresentante(pai, pai[verticeIndex]);
             // Atualizar o pai do vértice para o seu representante
         }
-        return parent[verticeIndex];
+        return pai[verticeIndex];
     }
     
     // Unir os conjuntos de dois vértices na árvore
-    private void unirConjuntos(int[] parent, int representanteOrigem, int representanteDestino) {
-        parent[representanteOrigem] = representanteDestino; // Definir o pai do representante da origem como o representante do destino
+    private void unirConjuntos(int[] pai, int representanteOrigem, int representanteDestino) {
+        pai[representanteOrigem] = representanteDestino; // Definir o pai do representante da origem como o representante do destino
     }
+    
     
 }
 
