@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -51,5 +52,18 @@ public class Menu {
         }
         return null;
     }
+
+    public static void clearConsole() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("bash", "-c", "clear").inheritIO().start().waitFor();
+            }
+        } catch (IOException | InterruptedException ex) {
+            System.err.println("Erro ao limpar o console: " + ex.getMessage());
+        }
+    }
+
     
 }

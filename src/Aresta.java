@@ -1,17 +1,17 @@
 
-public class Aresta {
+public class Aresta<T> implements Comparable<Aresta>{
 
-    private Vertice origem, destino;
+    private Vertice<T> origem, destino;
     private float peso;
 
-    public Aresta(Vertice verticeOrigem, Vertice verticeDestino, float peso) {
+    public Aresta(Vertice<T> verticeOrigem, Vertice<T> verticeDestino, float peso) {
         this.origem = verticeOrigem;
         this.destino = verticeDestino;
         this.peso = peso;
     
     }
 
-    public Vertice getOrigem() {
+    public Vertice<T> getOrigem() {
         return origem;
     }
 
@@ -19,7 +19,7 @@ public class Aresta {
         this.origem = origem;
     }
 
-    public Vertice getDestino() {
+    public Vertice<T> getDestino() {
         return destino;
     }
 
@@ -34,6 +34,19 @@ public class Aresta {
     public void setPeso(float peso) {
         this.peso = peso;
     }
+
+    @Override
+    public int compareTo(Aresta aresta) {
+        return Float.compare(this.peso, aresta.peso);
+    }
+
+    @Override
+    public String toString() {
+        return ("Origem: " + this.origem.toString() + " -> " + "Destino: " + this.destino.toString());
+    }
+
+  
+
 
     
 }
