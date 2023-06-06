@@ -70,8 +70,6 @@ public class App {
                     Grafo mst = grafo.obterArvoreGeradoraMinima();
                     mst.imprimirArestas();
 
-                    /* grafo.imprimirArestas(); */
-
                     System.out.println("Aperte ENTER para voltar ao menu");
                     scanner.nextLine();
                     break;

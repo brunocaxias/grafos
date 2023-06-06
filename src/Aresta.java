@@ -1,5 +1,5 @@
 
-public class Aresta<T> implements Comparable<Aresta>{
+public class Aresta<T> implements Comparable<Aresta> {
 
     private Vertice<T> origem, destino;
     private float peso;
@@ -8,7 +8,7 @@ public class Aresta<T> implements Comparable<Aresta>{
         this.origem = verticeOrigem;
         this.destino = verticeDestino;
         this.peso = peso;
-    
+
     }
 
     public Vertice<T> getOrigem() {
@@ -45,8 +45,18 @@ public class Aresta<T> implements Comparable<Aresta>{
         return ("Origem: " + this.origem.toString() + " -> " + "Destino: " + this.destino.toString());
     }
 
-  
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Aresta other = (Aresta) obj;
+        if (!origem.equals(other.origem) || !destino.equals(other.destino) || peso != other.peso)
+            return false;
+        return true;
+    }
 
-
-    
 }

@@ -159,6 +159,23 @@ public class Grafo<T> {
     }
 
     /**
+     * Metodo para retornar a aresta inversa a aresta enviada
+     * @param a
+     * @return
+     */
+    private Aresta obterArestaInversa(Aresta a){
+
+        Aresta aux = new Aresta(a.getDestino(), a.getOrigem(), a.getPeso());
+
+        for (Aresta aresta : this.arestas){
+            if(aresta.equals(aux)){
+                return aresta;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Metodo para printar todos os vizinhos de um vertice
      * @param v
      */
@@ -181,7 +198,7 @@ public class Grafo<T> {
             pesoTotal += aresta.getPeso();
         }
 
-        System.out.println("Peso total das arestas: " + pesoTotal);
+        System.out.println("Peso total das arestas: " + pesoTotal/2);
     }
 
     /**
@@ -189,6 +206,7 @@ public class Grafo<T> {
      * @return 
      */
     public Grafo<T> obterArvoreGeradoraMinima() {
+        
         // Criar um novo grafo para a árvore geradora mínima
         Grafo<T> mst = new Grafo<T>();
         mst.vertices = new ArrayList<>(vertices);
@@ -217,6 +235,15 @@ public class Grafo<T> {
                 pai[representanteOrigem] = representanteDestino; // Unir os conjuntos dos vértices apontando o representante pai do conjunto origem para o conjunto destino
             }
         }
+
+        // Adicionar novamente a aresta contraria para deixar o grafo novamente nao direcionado
+        int arestasiterativo = mst.arestas.size();
+
+        for(int i = 0; i < arestasiterativo; i++){
+            Aresta aux = obterArestaInversa(mst.arestas.get(i));
+            mst.arestas.add(aux);
+        }
+
     
         return mst;
     }
