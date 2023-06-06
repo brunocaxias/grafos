@@ -3,6 +3,7 @@ import java.util.Collections;
 
 /**
  * @author: Bruno Carvalho Caxias
+ * Implementacao de Kruskal
  */
 public class Grafo<T> {
 
@@ -184,87 +185,9 @@ public class Grafo<T> {
     }
 
     /**
-     * Implementação (nao convencional nem eficiente) de kruskal 
-     * @return
+     * Algoritmo de criacao da arvore geradora minima utilizando Kruskal
+     * @return 
      */
-    public Grafo<T> kruskal(){
-
-        // Grafo da arvore geradora minima
-        Grafo<T> mst = new Grafo<T>();
-
-
-        //Colocando em ordem a lista de arestas
-        Collections.sort(this.arestas);
-
-        //Adicionando os vertices a arvore geradora minima
-        mst.vertices = new ArrayList<>(this.vertices);
-
-        //Pega a menor aresta e adciona a lista de arestasMst
-        for(Aresta aresta : this.arestas){ 
-            mst.arestas.add(new Aresta<>(aresta.getOrigem(), aresta.getDestino(), aresta.getPeso()));
-
-            // Caso forme loop dentro da arvore geradora minima a aresta é removida
-            if(mst.possuiLoop()){
-                mst.arestas.remove(mst.arestas.size()-1);
-            }
-
-
-        }
-
-        return mst;
-    }
-
-
-    public void buscaEmProfundidade() {
-        ArrayList<Vertice<T>> visitados = new ArrayList<>();
-    
-        // Itera sobre todos os vértices do grafo
-        for (Vertice<T> vertice : this.vertices) {
-            if (!visitados.contains(vertice)) {
-                dfs(vertice, visitados);
-            }
-        }
-    }
-    
-    private boolean dfs(Vertice<T> vertice, ArrayList<Vertice<T>> visitados) {
-        visitados.add(vertice);
-    
-        for (Aresta aresta : this.arestas) {
-            if (aresta.getOrigem().equals(vertice)) {
-                Vertice<T> destino = aresta.getDestino();
-    
-                if (visitados.contains(destino)) {
-                    return true; // Retorna true indicando a existência de um loop
-                }
-    
-                if (dfs(destino, visitados)) {
-                    return true; // Retorna true caso um loop seja encontrado em uma chamada recursiva
-                }
-            }
-        }
-    
-        return false; // Retorna false se nenhum loop for encontrado
-    }
-    
-
-
-    public boolean possuiLoop() {
-        ArrayList<Vertice<T>> visitados = new ArrayList<>();
-    
-        for (Vertice<T> vertice : this.vertices) {
-            if (!visitados.contains(vertice)) {
-                if (dfs(vertice, visitados)) {
-                    return true; // Há um loop encontrado, retorna true
-                }
-            }
-        }
-
-
-    
-        return false; // Não há loops no grafo, retorna false
-    }
-    
-    
     public Grafo<T> obterArvoreGeradoraMinima() {
         // Criar um novo grafo para a árvore geradora mínima
         Grafo<T> mst = new Grafo<T>();
@@ -291,26 +214,29 @@ public class Grafo<T> {
             // Verificar se a inclusão da aresta forma um ciclo no grafo
             if (representanteOrigem != representanteDestino) {
                 mst.arestas.add(aresta); // Adicionar a aresta à árvore geradora mínima
-                unirConjuntos(pai, representanteOrigem, representanteDestino); // Unir os conjuntos dos vértices
+                pai[representanteOrigem] = representanteDestino; // Unir os conjuntos dos vértices apontando o representante pai do conjunto origem para o conjunto destino
             }
         }
     
         return mst;
     }
     
-    // Encontrar o representante (pai) de um vértice no conjunto
+    /**
+     * Esse metodo serve para encontrar o representante pai de cada vertice no grafo, o representante pai é o vertice que 
+     * representa um grupo de vertices, ele existe para facilitar busca e uniao de conjuntos.
+     * 
+     * @param pai lista que armazena o representate pai de cada vertice
+     * @param verticeIndex indeice do do vertice que queremos encontrar o representante pai
+     * @return
+     */
     private int encontrarRepresentante(int[] pai, int verticeIndex) {
-        if (pai[verticeIndex] != verticeIndex) {
+        if (pai[verticeIndex] != verticeIndex) { // Verifica se possui o ele mesmo como representante pai
             pai[verticeIndex] = encontrarRepresentante(pai, pai[verticeIndex]);
             // Atualizar o pai do vértice para o seu representante
         }
         return pai[verticeIndex];
     }
     
-    // Unir os conjuntos de dois vértices na árvore
-    private void unirConjuntos(int[] pai, int representanteOrigem, int representanteDestino) {
-        pai[representanteOrigem] = representanteDestino; // Definir o pai do representante da origem como o representante do destino
-    }
     
     
 }
