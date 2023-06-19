@@ -139,7 +139,7 @@ public class GeradorArquivosGrafo {
         GeradorArquivosGrafo g = new GeradorArquivosGrafo();
         Locale.setDefault(Locale.US);
         
-        int TAM = 3;
+        int TAM = 10;
         long tempoInicial = System. currentTimeMillis();        
         g.geraArquivo(TAM);
         long tempoFinal = System. currentTimeMillis();

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.PriorityQueue;
 
 /**
  * @author: Bruno Carvalho Caxias
@@ -193,12 +194,12 @@ public class Grafo<T> {
      */
     public void imprimirArestas(){
         float pesoTotal = 0;
-        for(Aresta aresta : arestas){
-            System.out.println(aresta.toString());
-            pesoTotal += aresta.getPeso();
+        for(int i = 0; i < arestas.size()/2; i++){
+            System.out.println(arestas.get(i).toString());
+            pesoTotal += arestas.get(i).getPeso();
         }
 
-        System.out.println("Peso total das arestas: " + pesoTotal/2);
+        System.out.println("Peso total das arestas: " + pesoTotal);
     }
 
     /**
@@ -257,13 +258,111 @@ public class Grafo<T> {
      * @return
      */
     private int encontrarRepresentante(int[] pai, int verticeIndex) {
-        if (pai[verticeIndex] != verticeIndex) { // Verifica se possui o ele mesmo como representante pai
+        if (pai[verticeIndex] != verticeIndex) { // Verifica se possui ele mesmo como representante pai
             pai[verticeIndex] = encontrarRepresentante(pai, pai[verticeIndex]);
             // Atualizar o pai do vértice para o seu representante
         }
         return pai[verticeIndex];
     }
-    
+
+
+    /**
+     * Metodo de implementacaoi de Dijkstra utilizando 3 listas (vertices para simbolizar vertice pai, booleanos para simbolizar
+     * se foram vistados ou nao e outro de inteiros para guardar distancias)
+     * com relacao 1 : 1 com a lista de vertices presentes no grafo
+     */
+    public ArrayList<Vertice<T>> obterMenorCaminho(Vertice<T> verticeOrigem, Vertice<T> verticeDestino) {
+
+        // Inicializaxao das estruturas que serao utilizadas, todas tem relação 1 para 1 com o array de vertices do grafo
+        ArrayList<Vertice<T>> caminhoMinimo = new ArrayList<>(); //Arraylist guardando o caminho de vertices encontrado
+        int[] distancias = new int[vertices.size()]; //array guardando as distancias do vertice de origem ate eles
+        Vertice<T>[] verticesAnteriores = new Vertice[vertices.size()]; //array guardando os vertices anteriores
+        boolean[] visitados = new boolean[vertices.size()]; //array guardando se o vertice foi ou nao visitado
+
+        // Coloca todos os vertices como nao visitados e deixa sua distancia como infinita (maxima permitida pela linguagem)
+        for (int i = 0; i < vertices.size(); i++) {
+            distancias[i] = Integer.MAX_VALUE;
+            visitados[i] = false;
+        }
+
+        // Coloca o vertice de origem com distancia zero, simbolizando que ele eh o começo
+        distancias[vertices.indexOf(verticeOrigem)] = 0;
+
+
+        for (int i = 0; i < vertices.size(); i++) {
+            // Procura o indice de menor distancia da lista de distancias
+            int indiceMenorDistancia = encontrarMenorDistancia(distancias, visitados);
+            // Coloca ele como visitado
+            visitados[indiceMenorDistancia] = true;
+            // Pega o vertice que representa essa menor distancia
+            Vertice<T> verticeAtual = vertices.get(indiceMenorDistancia);
+
+            // Se vertice atual for igual ao destino entao o loop é quebrado
+            if (verticeAtual.equals(verticeDestino)) {
+                break;
+            }
+
+            // Loop para iterar entre todas as arestas conectas ao vertice atual
+            for (Aresta aresta : obterDestinos(verticeAtual)) {
+                // Pega o destino da aresta atual
+                Vertice<T> vizinho = aresta.getDestino();
+                // Pega o peso da aresta atual (distancia)
+                int pesoAresta = (int) aresta.getPeso();
+                // Salva a nova distancia que sera utilizada no vertice de destino, sendo essa distancia a distancia do vertice atual mais o peso da aresta
+                int novaDistancia = distancias[vertices.indexOf(verticeAtual)] + pesoAresta;
+
+                // Verifica se a nova distancia é menor que a distancia do vertice vizinho
+                if (novaDistancia < distancias[vertices.indexOf(vizinho)]) {
+                    // Se for a distancia do vertice vizinho vira a nova distancia
+                    distancias[vertices.indexOf(vizinho)] = novaDistancia;
+                    // Salva nos vertices anteriores (o vertice que levou ate o caminho) o vertice atual
+                    verticesAnteriores[vertices.indexOf(vizinho)] = verticeAtual;
+                }
+            }
+        }
+
+        // Vertice atual vira verticeDestino
+        Vertice<T> verticeAtual = verticeDestino;
+        // Loop para verifica se o vertice atual nao eh nulo
+        while (verticeAtual != null) {
+            // Adiciona o verticeAtual ao caminho minimo
+            caminhoMinimo.add(verticeAtual);
+            // VerticeAtual ganha o valor de seu vertice anterior
+            verticeAtual = verticesAnteriores[vertices.indexOf(verticeAtual)];
+        }
+
+        // Organiza o arraylist devido a forma como os inserts sao feitos
+        Collections.reverse(caminhoMinimo);
+
+        // Retorna uma lista de vertices que geram o caminho minimo
+        return caminhoMinimo;
+    }
+
+
+    /**
+     * Metodo de procura de menor distancia de vertices nao visitados 
+     * @param distancias
+     * @param visitados
+     * @return
+     */
+    private int encontrarMenorDistancia(int[] distancias, boolean[] visitados) {
+        int menorDistancia = Integer.MAX_VALUE;
+        int indiceMenorDistancia = -1;
+
+        for (int i = 0; i < distancias.length; i++) {
+            // Se o vertice nao tiver sido visitado e a distancia estiver menor que infinito (maximo integer aceito)
+            if (!visitados[i] && distancias[i] < menorDistancia) {
+                // menorDistancia ganha a distancia do vertice
+                menorDistancia = distancias[i];
+                // indice fica com o indice da menor distancia
+                indiceMenorDistancia = i;
+            }
+        }
+
+        //retorna o indice de menor distancia encontrado na lista de distancias
+        return indiceMenorDistancia;
+    }
+
     
     
 }
