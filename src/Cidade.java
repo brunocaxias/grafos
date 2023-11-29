@@ -1,3 +1,7 @@
+
+/**
+ *  Classe de cidade
+ */
 public class Cidade {
 
     private int codigo;
